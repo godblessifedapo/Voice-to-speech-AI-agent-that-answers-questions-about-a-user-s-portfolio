@@ -1,0 +1,191 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e5c999ee-17b4-4f79-93a4-e7b0842444d8",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -128,
+        -160
+      ],
+      "id": "9220e408-f8f8-4959-9c99-8128c6a2f63b",
+      "name": "Webhook",
+      "webhookId": "e5c999ee-17b4-4f79-93a4-e7b0842444d8"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.question }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "d456291c-70e5-4b17-8c75-b33e238173ed",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openrouter/free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        96,
+        208
+      ],
+      "id": "3f052981-4582-4621-bbd7-fc613ac16c2a",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "JB2ThIhbcI1qBnWN",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to retrieve the equity portfolio from the user to answer questions about their holdings",
+        "documentId": {
+          "__rl": true,
+          "value": "1q_rf1NvEJhjzk__Lmpxs0jzky1ur0kpRXz5yzK23pCo",
+          "mode": "list",
+          "cachedResultName": "Portfolio rebalance",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1q_rf1NvEJhjzk__Lmpxs0jzky1ur0kpRXz5yzK23pCo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1q_rf1NvEJhjzk__Lmpxs0jzky1ur0kpRXz5yzK23pCo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        208
+      ],
+      "id": "8750b105-62dd-4758-ac3d-c528ada8ffaa",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eHG426a7HwtutZkw",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        592,
+        0
+      ],
+      "id": "85c43d79-7cdc-4fbd-ab3d-21cdee4487bc",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -128,
+        16
+      ],
+      "id": "4839607a-4dd5-4683-993b-436e512e3ff3",
+      "name": "When chat message received",
+      "webhookId": "ec75c329-9247-4411-a85c-e754f10e08fb",
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "491a22d8-e2f6-4b67-afd5-ffb1e3ec7a13",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4470b32166f0f66f907e967e96627846e76b423691bf6b9335107f2d28fd2fa2"
+  },
+  "nodeGroups": [],
+  "id": "3QEv7Ow11JTaRy5p",
+  "tags": []
+}
